@@ -1,40 +1,36 @@
-import { HomeCointaner, Itens, Title } from './styles'
-import image from '../../assets/Cafe.svg'
-import { Coffee, Package, ShoppingCart, Timer } from 'phosphor-react'
+import { Intro } from './components/Intro'
+import expresso from '../../assets/Expresso.svg'
+import { ShoppingCart } from 'phosphor-react'
+import { CoffeContainer, Coffee, CoffeeList, Tags } from './styles'
 
 export function Home() {
   return (
-    <HomeCointaner>
-      <div>
-        <Title>
-          <h1>Encontre o café perfeito para qualquer hora do dia</h1>
-          <p>
-            Com o Coffee Delivery você recebe seu café onde estiver, a qualquer
-            hora
-          </p>
-        </Title>
+    <>
+      <Intro />
 
-        <Itens>
-          <div>
-            <ShoppingCart size={16} weight="fill" />
-            <span>Compra simples e segura</span>
-          </div>
-          <div>
-            <Package size={16} weight="fill" />
-            <span>Embalagem mantém o café intacto</span>
-          </div>
-          <div>
-            <Timer size={16} weight="fill" />
-            <span>Entrega rápida e rastreada</span>
-          </div>
-          <div>
-            <Coffee size={16} weight="fill" />
-            <span>O café chega fresquinho até você</span>
-          </div>
-        </Itens>
-      </div>
-
-      <img src={image} alt="" />
-    </HomeCointaner>
+      <CoffeContainer>
+        <h1>Nossos cafés</h1>
+        <CoffeeList>
+          <Coffee>
+            <img src={expresso} alt="Expresso Tradicional" />
+            <Tags>
+              <p>Tradicional</p>
+            </Tags>
+            <h3>Expresso Tradicional</h3>
+            <p>O tradicional café feito com água quente e grãos moídos</p>
+            <div>
+              <span>R$</span>
+              <span>9,90</span>
+              <form action="">
+                <input type="number" />
+                <button>
+                  <ShoppingCart size={22} weight="fill" />
+                </button>
+              </form>
+            </div>
+          </Coffee>
+        </CoffeeList>
+      </CoffeContainer>
+    </>
   )
 }
