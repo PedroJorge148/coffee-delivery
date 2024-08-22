@@ -1,10 +1,10 @@
 import { MapPinLine } from "phosphor-react";
 import { Input } from "./form/input";
 import { useFormContext } from "react-hook-form";
-import { DeliveryFormSchema } from "../pages/cart";
+import { OrderProps } from "../pages/cart";
 
 export function AddressForm() {
-  const { register } = useFormContext<DeliveryFormSchema>()
+  const { register } = useFormContext<OrderProps>()
 
   return (
     <div className="bg-basecard p-10 rounded-md space-y-8">
@@ -21,6 +21,7 @@ export function AddressForm() {
           type="number"
           placeholder="CEP"
           className="w-52" 
+          min={0}
           {...register('cep')}
         />
         <Input
@@ -33,6 +34,7 @@ export function AddressForm() {
             type="number"
             placeholder="Número"
             className="max-w-52 w-full"
+            min={0}
             {...register('number')}
           />
           <Input

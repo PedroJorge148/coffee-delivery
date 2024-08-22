@@ -2,7 +2,7 @@ import { z } from "zod";
 import toast from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import { AddressForm } from "../components/address-form";
 import { CartItem } from "../components/cart-item";
@@ -25,15 +25,14 @@ const deliveryFormSchema = z.object({
   }),
 })
 
-export type DeliveryFormSchema = z.infer<typeof deliveryFormSchema>
+export type OrderProps = z.infer<typeof deliveryFormSchema>
 
 const deliveryPrice = 3.5
 
 export function Cart() {
-  const { cartItems } = useCart()
-  const navigate = useNavigate()
+  const { cartItems, checkout } = useCart()
 
-  const form = useForm<DeliveryFormSchema>({
+  const form = useForm<OrderProps>({
     resolver: zodResolver(deliveryFormSchema)
   })
 
@@ -57,10 +56,14 @@ export function Cart() {
     0
   )
 
-  function handleCreateNewOrder(data: DeliveryFormSchema) {
-    console.log(data)
+  function handleCreateNewOrder(data: OrderProps) {
+    if (coffesInCart.length === 0) {
+      return toast('Seu carrinho está vazio!', {
+        icon: '⚠️'
+      })
+    }
 
-    navigate('/success')
+    checkout(data)
   }
 
   function onInvalid() {
@@ -92,7 +95,7 @@ export function Cart() {
               coffesInCart.map((coffee) => (
                 <CartItem key={coffee.id} coffee={coffee} />
               )) : (
-                <div className="flex flex-col bg-amber-100 border border-yellowdark px-4 py-2 rounded-md text-center">
+                <div className="flex flex-col bg-yellowligth border border-yellowdark px-4 py-2 rounded-md text-center">
                   <span>Oops... </span>
                   <span>Não há nenhum café em seu carrinho.</span>
                   <span>

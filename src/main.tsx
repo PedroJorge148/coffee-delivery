@@ -6,7 +6,6 @@ import { App } from './app'
 import { Cart } from './pages/cart'
 import { Home } from "./pages/home"
 import { Success } from './pages/success'
-import { CartProvider } from './context/cart-context'
 
 import './index.css'
 
@@ -24,7 +23,7 @@ const router = createBrowserRouter([
         element: <Cart />
       },
       {
-        path: '/success',
+        path: '/order/:orderId/success',
         element: <Success />
       },
     ]
@@ -33,8 +32,6 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <CartProvider>
-      <RouterProvider router={router} />
-    </CartProvider>
+    <RouterProvider router={router} />
   </StrictMode>,
 )

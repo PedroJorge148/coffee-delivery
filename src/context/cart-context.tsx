@@ -1,81 +1,78 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
-
-interface CartItem {
-  id: string
-  quantity: number
-}
-
+import { createContext, ReactNode, useContext, useEffect, useReducer } from "react";
+import { useNavigate } from "react-router-dom";
+import { OrderProps } from "../pages/cart";
+import { CartItem, cartReducer, Order } from "../reducers/cart/reducer";
+import { addItemToCartAction, checkoutCartAction, decrementItemQuantityAction, incrementItemQuantityAction, removeItemFromCartAction } from "../reducers/cart/actions";
 interface CartContextType {
   cartItems: CartItem[]
-  addToCart: (itemToAdd: CartItem) => void
+  orders: Order[]
+  addToCart: (newItem: CartItem) => void
   removeFromCart: (id: string) => void
   decrementQuantity: (id: string) => void
   incrementQuantity: (id: string) => void
+  checkout: (data: OrderProps) => Promise<void>
 }
 
 const CartContext = createContext({} as CartContextType)
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
-    const storedItems = localStorage.getItem('@coffee-delivery:cart-items-1.0.0')
+  const [cartState, dispatch] = useReducer(
+    cartReducer,
+    {
+      cartItems: [],
+      orders: [],
+    },
+    (cartInitiaState) => {
+      const storedCartState = localStorage.getItem(
+        '@coffee-delivery:cart-state-1.0.0'
+      )
 
-    return storedItems ? JSON.parse(storedItems) : []
-  })
+      if (storedCartState) {
+        return JSON.parse(storedCartState)
+      }
+      
+      return cartInitiaState
+    }
+  )
 
-  useEffect(() => {
-    localStorage.setItem('@coffee-delivery:cart-items-1.0.0', JSON.stringify(cartItems))
-  }, [cartItems])
+  const navigate = useNavigate()
+  const { cartItems, orders } = cartState
 
   function addToCart(newItem: CartItem) {
-    setCartItems(currentCart => {
-      const existingItem = currentCart.find((item) => item.id === newItem.id)
-
-      return existingItem
-        ? currentCart.map((cartItem) =>
-          cartItem.id === newItem.id
-            ? { ...cartItem, quantity: newItem.quantity }
-            : cartItem
-        )
-        : [...currentCart, newItem];
-    })
+    dispatch(addItemToCartAction(newItem))
   }
 
-  function removeFromCart(id: string) {
-    setCartItems(state => {
-      return state.filter(item => item.id !== id)
-    })
+  function removeFromCart(itemId: string) {
+    dispatch(removeItemFromCartAction(itemId))
   }
 
-  function decrementQuantity(id: string) {
-    setCartItems(currentCart => {
-      const existingItem = currentCart.find((item) => item.id === id)
-
-      if (existingItem && existingItem.quantity <= 1) {
-        return currentCart
-      }
-
-      return currentCart.map((cartItem) =>
-        cartItem.id === id
-          ? { ...cartItem, quantity: cartItem.quantity - 1 }
-          : cartItem
-      )
-    })
+  function decrementQuantity(itemId: string) {
+   dispatch(decrementItemQuantityAction(itemId))
   }
 
-
-  function incrementQuantity(id: string) {
-    setCartItems(currentCart => {
-      return currentCart.map((cartItem) =>
-        cartItem.id === id
-          ? { ...cartItem, quantity: cartItem.quantity + 1 }
-          : cartItem
-      )
-    })
+  function incrementQuantity(itemId: string) {
+    dispatch(incrementItemQuantityAction(itemId))
   }
+
+  async function checkout(data: OrderProps) {
+   dispatch(checkoutCartAction(data, navigate))
+  }
+
+  useEffect(() => {
+    localStorage.setItem(
+      '@coffee-delivery:cart-state-1.0.0', JSON.stringify(cartState)
+    )
+  }, [cartState])
 
   return (
     <CartContext.Provider value={{
-      cartItems, addToCart, removeFromCart, decrementQuantity, incrementQuantity
+      cartItems,
+      orders,
+      addToCart,
+      removeFromCart,
+      decrementQuantity,
+      incrementQuantity,
+      checkout
     }}>
       {children}
     </CartContext.Provider>

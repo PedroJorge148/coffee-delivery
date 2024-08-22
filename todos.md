@@ -6,7 +6,7 @@
 - [x] Add select state to radio buttons
 
 #### Features To do's:
- - [ ] Reset cart
- - [ ] Store order
- - [ ] Show order details in success page
- - [ ] Create reducers, actions and use immer?
+ - [x] Reset cart
+ - [x] Store order
+ - [x] Show order details in success page
+ - [x] Create reducers, actions and use immer?

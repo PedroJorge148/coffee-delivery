@@ -16,7 +16,9 @@ export function Header() {
           <span className="text-purpledark">Massapê, CE</span>
         </span>
         <NavLink to="/cart" className="relative bg-yellowligth text-yellowdark p-2 rounded-md">
-          <span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 text-sm size-5 rounded-full text-white bg-yellowdark flex items-center justify-center">{cartItems.length}</span>
+          <span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 text-xs size-5 rounded-full text-white bg-yellowdark flex items-center justify-center">
+            {cartItems.length}
+          </span>
           <ShoppingCart className="size-6" weight="fill" />
         </NavLink>
       </div>
