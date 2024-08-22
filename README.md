@@ -1,50 +1,48 @@
-# React + TypeScript + Vite
+# ☕ Coffee Delivery
+A simple place to buy great coffees ❤️ 
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[![Coffee Delivery - Challenge 02](/.github/screenshots/cover.png "Coffee Delivery - Challenge 02")](https://www.figma.com/file/5yT9ZzZmRQRS4yivGGB3pl/Coffee-Delivery/duplicate)
+Click for visit figma project
 
-Currently, two official plugins are available:
+## :page_with_curl:  Description
+This is a ecommerce app for buy coffees. That uses tailwindcss, radix-ui, react-hook-form, zod and some other like:
+- States
+- ContextAPI
+- LocalStorage
+- React Hooks
+ 
+## :gear: Tech Stack
+[![React JS](https://skillicons.dev/icons?i=react "React JS")](https://react.dev/ "React JS") [![Typescript](https://skillicons.dev/icons?i=ts "Typescript")](https://www.typescriptlang.org/ "Typescript") [![Vite](https://skillicons.dev/icons?i=vite "Vite")](https://vitejs.dev/ "Vite") [![tailwind](https://skillicons.dev/icons?i=tailwind "tailwind")](https://tailwindcss.com/ "tailwind")
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 💻 How to run
+1. Make sure **Git** and **NodeJS** is installed.
+2. Clone this repository to your local computer.
+3. Install the project dependencies using:
+> npm install
+4. Run the API that's using json server with command:
+> npm run server
+5. Run the app using the command:
+> npm run dev
 
-## Expanding the ESLint configuration
+**OBS.:** I used pnpm for run install dependencies, you can simply install pnpm using
+> npm install -g pnpm
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+and then run:
+>pnpm install
 
-- Configure the top-level `parserOptions` property like this:
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## :rocket: Follow Me
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+[![GitHub followers](https://img.shields.io/github/followers/pedrojorge148?style=social&label=Follow&maxAge=2592000)](https://github.com/pedrojorge148 "Follow Me") [![Linkedin Badge](https://img.shields.io/badge/-Linkedin-blue?style=flat-square&logo=Linkedin&logoColor=white&link=https://www.linkedin.com/in/pedrojorge258/)](https://www.linkedin.com/in/pedrojorge258/)  [![Instagram Badge](https://img.shields.io/badge/-Instagram-purple?style=flat-square&logo=Instagram&logoColor=white&link=https://www.instagram.com/pedrojrg_)](https://www.instagram.com/pedrojrg_/)
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## Screenshots
+![Coffee Delivery - Challenge 02](/.github/screenshots/img_1.png "Coffee Delivery - Challenge 02")
+![Coffee Delivery - Challenge 02](/.github/screenshots/img_2.png "Coffee Delivery - Challenge 02")
+![Coffee Delivery - Challenge 02](/.github/screenshots/img_3.png "Coffee Delivery - Challenge 02")
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+
+## 📝 License
+
+This project uses MIT License. You can see the file [LICENSE](LICENSE) for more details.
+
+  ---

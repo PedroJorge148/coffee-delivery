@@ -4,6 +4,7 @@
 - [x] Add border gradient
 - [x] Add favicon
 - [x] Add select state to radio buttons
+- [ ] Add responsivity
 
 #### Features To do's:
  - [x] Reset cart
