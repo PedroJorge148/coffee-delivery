@@ -1,75 +1,86 @@
-import { Bank, CreditCard, CurrencyDollar, MapPinLine, Money, Trash } from "phosphor-react";
-import { QuantityInput } from "../components/form/quantity-input";
+import { z } from "zod";
+import toast from "react-hot-toast";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FormProvider, useForm } from "react-hook-form";
+import { NavLink, useNavigate } from "react-router-dom";
+
+import { AddressForm } from "../components/address-form";
+import { CartItem } from "../components/cart-item";
+import { PaymentMethod } from "../components/payment-method";
+import { useCart } from "../context/cart-context";
+import { formartCurrency } from "../lib/utils";
+
+import { coffees } from '../data/data.json';
+
+const deliveryFormSchema = z.object({
+  cep: z.coerce.number({ invalid_type_error: 'Informe o CEP' }),
+  street: z.string().min(1, 'Informe a rua'),
+  number: z.coerce.number().min(1, 'Informe o número'),
+  complement: z.string(),
+  neighborhood: z.string().min(1, 'Informe o bairro'),
+  city: z.string().min(1, 'Informe a cidade'),
+  state: z.string().min(1, 'Informe a UF'),
+  paymentMethod: z.enum(['credit', 'debit', 'cash'], {
+    invalid_type_error: 'Informe um método de pagamento',
+  }),
+})
+
+export type DeliveryFormSchema = z.infer<typeof deliveryFormSchema>
+
+const deliveryPrice = 3.5
 
 export function Cart() {
+  const { cartItems } = useCart()
+  const navigate = useNavigate()
+
+  const form = useForm<DeliveryFormSchema>({
+    resolver: zodResolver(deliveryFormSchema)
+  })
+
+  const { handleSubmit, formState: { isSubmitting } } = form
+
+  const coffesInCart = cartItems.map((item) => {
+    const coffeeDetails = coffees.find((coffee) => coffee.id === item.id)
+
+    if (!coffeeDetails) {
+      throw new Error('Invalid coffee.')
+    }
+
+    return {
+      ...coffeeDetails,
+      quantity: item.quantity
+    }
+  })
+
+  const totalPrice = coffesInCart.reduce(
+    (total, coffee) => total + (coffee.price * coffee.quantity),
+    0
+  )
+
+  function handleCreateNewOrder(data: DeliveryFormSchema) {
+    console.log(data)
+
+    navigate('/success')
+  }
+
+  function onInvalid() {
+    toast('Os campos são obrigatórios!', {
+      icon: '⚠️'
+    })
+  }
+
   return (
     <div className="mx-auto grid grid-cols-5 gap-8 px-4 py-10 w-full max-w-[1160px]">
       <div className="col-span-3 space-y-4">
         <h2 className="font-alt font-bold text-basesubtitle text-lg">Complete seu pedido</h2>
         <div className="space-y-3">
-          <div className="bg-basecard p-10 rounded-md space-y-8">
-            <div className="flex items-start gap-2">
-              <MapPinLine className="size-6 text-yellowdark" />
-              <div className="flex flex-col">
-                <span className="text-basesubtitle font-medium">Endereço de Entrega</span>
-                <span className="text-basetext text-sm">Informe o endereço onde deseja receber seu pedido</span>
-              </div>
-            </div>
+          <form id="order" onSubmit={handleSubmit(handleCreateNewOrder, onInvalid)}>
+            <FormProvider {...form}>
+              <AddressForm />
 
-            <form className="space-y-4">
-              <div className="w-52 bg-baseinput border border-basebutto text-sm rounded-md p-3">
-                <input type="number" placeholder="CEP" className="w-full border-none bg-transparent outline-none placeholder:text-baselabel" />
-              </div>
-              <div className="w-full bg-baseinput border border-basebutton text-sm rounded-md p-3">
-                <input type="text" placeholder="Rua" className="w-full border-none bg-transparent outline-none placeholder:text-baselabel" />
-              </div>
-              <div className="flex gap-3">
-                <div className="min-w-52 bg-baseinput border border-basebutton text-sm rounded-md p-3">
-                  <input type="number" placeholder="Número" className="w-full border-none bg-transparent outline-none placeholder:text-baselabel" />
-                </div>
-                <div className="flex items-center gap-0.5 w-full bg-baseinput border border-basebutton text-sm rounded-md p-3">
-                  <input type="text" placeholder="Complemento" className="w-full border-none bg-transparent outline-none placeholder:text-baselabel" />
-                  <span className="italic text-baselabel text-xs">Opcional</span>
-                </div>
-              </div>
-              <div className="flex gap-3">
-                <div className="min-w-52 bg-baseinput border border-basebutton text-sm rounded-md p-3">
-                  <input type="text" placeholder="Bairro" className="w-full border-none bg-transparent outline-none placeholder:text-baselabel" />
-                </div>
-                <div className="w-full bg-baseinput border border-basebutton text-sm rounded-md p-3">
-                  <input type="text" placeholder="Cidade" className="w-full border-none bg-transparent outline-none placeholder:text-baselabel" />
-                </div>
-                <div className="w-16 bg-baseinput border border-basebutton text-sm rounded-md p-3">
-                  <input type="text" placeholder="UF" className="w-full border-none bg-transparent outline-none placeholder:text-baselabel" />
-                </div>
-              </div>
-            </form>
-          </div>
-
-          <div className="bg-basecard p-10 rounded-md">
-            <div className="flex items-start gap-2">
-              <CurrencyDollar className="size-6 text-purple" />
-              <div className="flex flex-col">
-                <span className="text-basesubtitle font-medium">Pagamento</span>
-                <span className="text-basetext text-sm">O pagamento é feito na entrega. Escolha a forma que deseja pagar</span>
-              </div>
-            </div>
-
-            <div className="mt-8 flex items-center gap-3 text-xs">
-              <button type="button" className="flex items-center w-full gap-2 bg-basebutton uppercase p-4 rounded-md">
-                <CreditCard className="size-4 text-purple" />
-                CARTÃO DE CRÉDITO
-              </button>
-              <button type="button" className="flex items-center w-full gap-2 bg-basebutton uppercase p-4 rounded-md">
-                <Bank className="size-4 text-purple" />
-                CARTÃO DE DÉBITO
-              </button>
-              <button type="button" className="flex items-center w-full gap-2 bg-basebutton uppercase p-4 rounded-md">
-                <Money className="size-4 text-purple" />
-                DINHEIRO
-              </button>
-            </div>
-          </div>
+              <PaymentMethod />
+            </FormProvider>
+          </form>
         </div>
       </div>
 
@@ -77,39 +88,21 @@ export function Cart() {
         <h2 className="font-alt font-bold text-basesubtitle text-lg">Cafés selecionados</h2>
         <div className="bg-basecard p-10 rounded-md space-y-8 rounded-se-3xl rounded-es-3xl">
           <div className="space-y-12">
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-4">
-                <img src="/coffees/americano.svg" alt="" className="size-16" />
-                <div className="flex flex-col gap-2">
-                  <span className="text-basesubtitle">Expresso Americano</span>
-                  <div className="flex items-center gap-2">
-                    <QuantityInput />
-                    <button type="button" className="flex items-center w-full gap-2 bg-basebutton uppercase p-2 rounded-md">
-                      <Trash className="size-4 text-purple" />
-                      <span className="text-xs">REMOVER</span>
-                    </button>
-                  </div>
+            {coffesInCart.length > 0 ?
+              coffesInCart.map((coffee) => (
+                <CartItem key={coffee.id} coffee={coffee} />
+              )) : (
+                <div className="flex flex-col bg-amber-100 border border-yellowdark px-4 py-2 rounded-md text-center">
+                  <span>Oops... </span>
+                  <span>Não há nenhum café em seu carrinho.</span>
+                  <span>
+                    Clique para{' '}
+                    <NavLink to="/" className="underline ">
+                      voltar ao início!
+                    </NavLink>
+                  </span>
                 </div>
-              </div>
-              <span className="font-bold">R$ 9,90</span>
-            </div>
-            
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-4">
-                <img src="/coffees/americano.svg" alt="" className="size-16" />
-                <div className="flex flex-col gap-2">
-                  <span className="text-basesubtitle">Expresso Americano</span>
-                  <div className="flex items-center gap-2">
-                    <QuantityInput />
-                    <button type="button" className="flex items-center w-full gap-2 bg-basebutton uppercase p-2 rounded-md">
-                      <Trash className="size-4 text-purple" />
-                      <span className="text-xs">REMOVER</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <span className="font-bold">R$ 9,90</span>
-            </div>
+              )}
           </div>
 
           <div className="w-full h-[1.5px] shrink-0 bg-basebutton" />
@@ -117,19 +110,26 @@ export function Cart() {
           <div className="space-y-3 ">
             <div className="flex items-center justify-between">
               <span className="text-sm">Total de itens</span>
-              <span>R$ 29,70</span>
+              <span>{formartCurrency(totalPrice)}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm">Entrega</span>
-              <span>R$ 3,50</span>
+              <span>{formartCurrency(deliveryPrice)}</span>
             </div>
             <div className="flex items-center justify-between text-basesubtitle">
               <span className="text-xl font-bold">Total</span>
-              <span className="text-xl font-bold">R$ 33,20</span>
+              <span className="text-xl font-bold">
+                {formartCurrency(totalPrice + deliveryPrice)}
+              </span>
             </div>
           </div>
 
-          <button type="button" className="w-full rounded-md text-white bg-yellow p-3 leading-relaxed text-sm font-bold text-center">
+          <button
+            type="submit"
+            form="order"
+            className="w-full rounded-md text-white bg-yellow p-3 leading-relaxed text-sm font-bold transition-colors enabled:hover:bg-yellowdark disabled:opacity-90 disabled:cursor-not-allowed"
+            disabled={isSubmitting}
+          >
             CONFIRMAR PEDIDO
           </button>
         </div>
