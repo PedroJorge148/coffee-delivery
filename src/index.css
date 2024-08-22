@@ -27,7 +27,19 @@
 }
 
 @layer base {
+  :focus {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow focus-visible:ring-offset-2;
+  }
+  
   body {
     @apply bg-background text-basetext;
   }
+}
+
+.border-gradient {
+  border-width: 1px;
+  border-style: solid;
+  border-image: linear-gradient(90deg, #DBAC2C 0%, #8047F8 100%);
+  border-image-slice: 1;
+  border-radius: inherit; /* Inherit the rounded corners from Tailwind */
 }
